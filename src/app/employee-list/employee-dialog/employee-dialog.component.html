@@ -1,0 +1,123 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="employeeForm" class="employee-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name *</mat-label>
+        <input matInput formControlName="name" required>
+        <mat-error *ngIf="employeeForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+        <mat-error *ngIf="employeeForm.get('name')?.hasError('maxlength')">
+          Name must not exceed 100 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email *</mat-label>
+        <input matInput type="email" formControlName="email" required>
+        <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+          Invalid email format
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Employee ID</mat-label>
+        <input matInput formControlName="employeeId">
+        <mat-error *ngIf="employeeForm.get('employeeId')?.hasError('maxlength')">
+          Employee ID must not exceed 20 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ status }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phoneNumber">
+        <mat-error *ngIf="employeeForm.get('phoneNumber')?.hasError('maxlength')">
+          Phone number must not exceed 15 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Hire Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="hireDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <textarea matInput formControlName="address" rows="3"></textarea>
+        <mat-error *ngIf="employeeForm.get('address')?.hasError('maxlength')">
+          Address must not exceed 200 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Salary</mat-label>
+        <input matInput type="number" formControlName="salary" min="0" step="0.01">
+        <mat-error *ngIf="employeeForm.get('salary')?.hasError('min')">
+          Salary must be positive
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Job Title</mat-label>
+        <input matInput formControlName="jobTitle">
+        <mat-error *ngIf="employeeForm.get('jobTitle')?.hasError('maxlength')">
+          Job title must not exceed 100 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Department *</mat-label>
+        <mat-select formControlName="departmentId" required>
+          <mat-option *ngFor="let dept of departments" [value]="dept.id">
+            {{ dept.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="employeeForm.get('departmentId')?.hasError('required')">
+          Department is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <mat-icon>error</mat-icon>
+      {{ errorMessage }}
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isLoading || employeeForm.invalid">
+    <mat-spinner *ngIf="isLoading" diameter="20" class="inline-spinner"></mat-spinner>
+    <span *ngIf="!isLoading">{{ isEditMode ? 'Update' : 'Create' }}</span>
+  </button>
+</mat-dialog-actions>
+

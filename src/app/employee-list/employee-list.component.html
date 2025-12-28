@@ -1,5 +1,14 @@
 <mat-toolbar color="primary">
-  Employee List
+  <span>Employee List</span>
+  <span class="spacer"></span>
+  <button 
+    mat-raised-button 
+    color="accent" 
+    (click)="openCreateEmployeeDialog()"
+    *ngIf="canCreateEmployee$ | async">
+    <mat-icon>add</mat-icon>
+    Create Employee
+  </button>
 </mat-toolbar>
 
 <mat-card class="mt-3">
