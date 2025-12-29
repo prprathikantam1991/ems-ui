@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentService } from '../services/department.service';
+import { LoggerService } from '../services/logger.service';
 import { Department } from '../models/department';
 
 @Component({
@@ -12,15 +13,20 @@ export class DepartmentListComponent implements OnInit{
   displayedColumns: string[] = ['id', 'name', 'description'];
   departments : Department[] = [];
 
-  constructor(private departmentService: DepartmentService) {}
+  constructor(
+    private departmentService: DepartmentService,
+    private logger: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.departmentService.getDepartments().subscribe({
       next: data => {
         this.departments = data;
-        console.log(JSON.stringify(this.departments))
+        this.logger.debug('Loaded departments', { count: this.departments.length });
       },
-      error: error => console.error(error)
+      error: error => {
+        this.logger.error('Error loading departments', error);
+      }
     })
   }
 

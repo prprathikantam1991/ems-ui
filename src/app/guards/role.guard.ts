@@ -3,6 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { RoleService } from '../services/role.service';
+import { LoggerService } from '../services/logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class RoleGuard implements CanActivate {
 
   constructor(
     private roleService: RoleService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   canActivate(
@@ -34,7 +36,7 @@ export class RoleGuard implements CanActivate {
           return true;
         } else {
           // User doesn't have required role, redirect to dashboard
-          console.warn(`Access denied: User does not have required roles: ${requiredRoles.join(', ')}`);
+          this.logger.warn(`Access denied: User does not have required roles: ${requiredRoles.join(', ')}`);
           this.router.navigate(['/dashboard']);
           return false;
         }
@@ -42,4 +44,5 @@ export class RoleGuard implements CanActivate {
     );
   }
 }
+
 

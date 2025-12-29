@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmployeeService } from '../services/employee.service';
 import { Employee } from '../models/employee';
 import { RoleService } from '../services/role.service';
+import { LoggerService } from '../services/logger.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
@@ -22,7 +23,8 @@ export class EmployeeListComponent implements OnInit {
     private employeeService: EmployeeService,
     private roleService: RoleService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private logger: LoggerService
   ) {
     this.canCreateEmployee$ = this.roleService.hasRole('ADMIN');
   }
@@ -35,10 +37,10 @@ export class EmployeeListComponent implements OnInit {
     this.employeeService.getEmployees().subscribe({
       next: data => {
         this.employees = data.content;
-        console.log(JSON.stringify(this.employees));
+        this.logger.debug('Loaded employees', { count: this.employees.length });
       },
       error: error => {
-        console.error(error);
+        this.logger.error('Error loading employees', error);
         this.snackBar.open(
           'Failed to load employees. Please try again.',
           'Close',

@@ -9,6 +9,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { LoggerService } from '../services/logger.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -17,7 +18,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private injector: Injector,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) {}
 
   private get authService(): AuthService {
@@ -43,7 +45,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         // Handle 401 Unauthorized errors
         if (error.status === 401) {
-          console.warn('Unauthorized request - token may be expired or invalid');
+          this.logger.warn('Unauthorized request - token may be expired or invalid');
           
           // Redirect to login
           this.router.navigate(['/login']);
@@ -51,7 +53,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         // Handle 403 Forbidden errors
         if (error.status === 403) {
-          console.warn('Forbidden - insufficient permissions');
+          this.logger.warn('Forbidden - insufficient permissions');
           // Optionally redirect or show error message
         }
 

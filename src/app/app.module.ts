@@ -27,6 +27,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DepartmentListComponent } from './department-list/department-list.component';
 import { LoginComponent } from './login/login.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeeDialogComponent } from './employee-list/employee-dialog/employee-dialog.component';
 
@@ -63,6 +64,11 @@ import { EmployeeDialogComponent } from './employee-list/employee-dialog/employe
     MatSnackBarModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoggingInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { LoggerService } from '../services/logger.service';
 
 @Component({
   selector: 'app-login',
@@ -8,16 +9,19 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent {
 
-  constructor(private authService: AuthService) {
-    console.log('LoginComponent initialized');
+  constructor(
+    private authService: AuthService,
+    private logger: LoggerService
+  ) {
+    this.logger.debug('LoginComponent initialized');
   }
 
   loginWithGoogle(): void {
-    console.log('loginWithGoogle() called');
+    this.logger.debug('loginWithGoogle() called');
     try {
       this.authService.login();
     } catch (error: any) {
-      console.error('Error in loginWithGoogle:', error);
+      this.logger.error('Error in loginWithGoogle', error);
       alert('Error initiating login. Check console for details.');
     }
   }

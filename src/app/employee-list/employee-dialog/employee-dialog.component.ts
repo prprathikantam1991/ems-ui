@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeeService } from '../../services/employee.service';
 import { DepartmentService } from '../../services/department.service';
+import { LoggerService } from '../../services/logger.service';
 import { EmployeeRequest } from '../../models/employee-request';
 import { Department } from '../../models/department';
 import { EmployeeResponseDto } from '../../models/employee-response-dto';
@@ -32,7 +33,8 @@ export class EmployeeDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: EmployeeDialogData,
     private employeeService: EmployeeService,
     private departmentService: DepartmentService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private logger: LoggerService
   ) {
     this.isEditMode = !!data?.employee;
     this.employeeForm = this.createForm();
@@ -81,7 +83,7 @@ export class EmployeeDialogComponent implements OnInit {
         this.departments = departments;
       },
       error: (error) => {
-        console.error('Error loading departments:', error);
+        this.logger.error('Error loading departments', error);
         this.errorMessage = 'Failed to load departments. Please try again.';
       }
     });
@@ -134,7 +136,7 @@ export class EmployeeDialogComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          console.error('Error creating employee:', error);
+          this.logger.error('Error creating employee', error);
           const errorMsg = error.error?.message || 'Failed to create employee. Please try again.';
           this.errorMessage = errorMsg;
           // Show error snackbar for better visibility
