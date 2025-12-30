@@ -9,10 +9,10 @@ import { map, catchError, tap, shareReplay } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  // Single source of truth: userInfo$ 
+  // Single source of truth: userInfo$
   private userInfoSubject = new BehaviorSubject<any>(null);
   public userInfo$: Observable<any> = this.userInfoSubject.asObservable();
-  
+
   // Derived from userInfo$ - automatically stays in sync
   public isAuthenticated$: Observable<boolean> = this.userInfo$.pipe(
     map(userInfo => userInfo !== null)
@@ -31,9 +31,13 @@ export class AuthService {
 
   /**
    * Initiate login by redirecting to Auth Service
+   * Includes returnUrl parameter to redirect back to originating app after login
    */
   public login(): void {
-    window.location.href = `${environment.authServiceUrl}/auth/login`;
+    // Get current app URL (origin + pathname) to redirect back after login
+    const returnUrl = window.location.origin + window.location.pathname;
+    const encodedReturnUrl = encodeURIComponent(returnUrl);
+    window.location.href = `${environment.authServiceUrl}/auth/login?returnUrl=${encodedReturnUrl}`;
   }
 
   /**
@@ -75,7 +79,7 @@ export class AuthService {
         tap(userInfo => {
           this.userInfoSubject.next(userInfo);
           this.isFetchingUserInfo = false;
-          
+
           // If authenticated and on login page, redirect to dashboard
           if (userInfo !== null && this.router.url === '/login') {
             this.router.navigate(['/dashboard']);
